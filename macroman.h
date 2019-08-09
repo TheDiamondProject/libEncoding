@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+#include "utf8.h"
+
 #include <sys/types.h>
 #include <stdint.h>
 
@@ -29,7 +31,11 @@
 /* Convert a MacRoman encoded string into a sequence of Unicode Code Points. These
  * Code Points are all 2 bytes wide to make for consistent/easy calculations. The
  * generated Code Points will then need to be converted to UTF-8. */
-size_t unicode_from_macroman(uint16_t **cp, const char *restrict macroman, size_t len);
+size_t unicode_from_macroman(codepoint_t **cp, const char *restrict macroman, size_t len);
+
+/* Convert a MacRoman encoded string into a UTF-8 encoded string. The result should be
+ * free'd by the caller. */
+const char *utf8_from_macroman(const char *restrict macroman, size_t len);
 
 #endif
 

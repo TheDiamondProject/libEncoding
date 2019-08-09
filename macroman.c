@@ -31,7 +31,7 @@
 /* This array contains the appropriate unicode code point for each of the 256 characters
  * that are representable via the MacRoman encoding. The character value can be used as an
  * index into this array to get the corresponding code point. */
-static uint16_t macroman_codepoints[0x100] = {
+static codepoint_t macroman_codepoints[0x100] = {
 	// Standard ASCII
 	0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 
 	0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
@@ -71,12 +71,12 @@ static uint16_t macroman_codepoints[0x100] = {
 
 
 /* Convenience function for looking up a Code Point for a MacRoman character. */
-static inline uint16_t codepoint_for_macroman_char(const char c)
+static inline codepoint_t codepoint_for_macroman_char(const char c)
 {
 	return macroman_codepoints[(uint8_t)c];
 }
 
-size_t unicode_from_macroman(uint16_t **cp, const char *restrict macroman, size_t len)
+size_t unicode_from_macroman(codepoint_t **cp, const char *restrict macroman, size_t len)
 {
 	// The first step is build a new store for the code points to be placed.
 	if (!cp) {
@@ -93,5 +93,19 @@ size_t unicode_from_macroman(uint16_t **cp, const char *restrict macroman, size_
 
 	// Return the result size.
 	return len;
+}
+
+const char *utf8_from_macroman(const char *restrict macroman, size_t len)
+{
+	// Generate the code points for the MacRoman string.
+	codepoint_t *cp = NULL;
+	unicode_from_macroman(&cp, macroman, len);
+
+	// Request the construction of a UTF-8 string.
+	const char *str = utf8_construct_from_codepoints(cp, len);
+	
+	// Clean up and return the result.
+	free(cp);
+	return str;
 }
 
