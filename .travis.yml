@@ -1,5 +1,7 @@
 language: c
-script: make test
+script: 
+    - make test
+    - ./test
 git:
     submodules: false
 before_install:

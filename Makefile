@@ -25,9 +25,12 @@ all: libEncoding.a
 clean:
 	rm *.o *.a
 
+.PHONY: run-all-tests
+run-all-tests: test
+	./test
+
 test: libUnit/unit.c tests.c libEncoding.a
 	$(CC) -I./ -DUNIT_TEST -o $@ $^
-	./test
 
 libEncoding.a: macroman.o utf8.o
 	$(AR) -cr $@ $^
