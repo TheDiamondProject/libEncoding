@@ -1,4 +1,4 @@
-# libEncoding
+# libEncoding ![BuildCIBadge](https://travis-ci.org/TheDiamondProject/libEncoding.svg?branch=master)
 **libEncoding** is part of _The Diamond Project_ and is reponsible for handling
 legacy text encodings, such as MacRoman. The library is currently very light ]
 weight and by no means features rich/feature full implementations of either 
