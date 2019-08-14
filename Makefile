@@ -25,8 +25,12 @@ all: libEncoding.a
 clean:
 	rm *.o *.a
 
+test: libUnit/unit.c tests.c libEncoding.a
+	$(CC) -I./ -DUNIT_TEST -o $@ $^
+	./test
+
 libEncoding.a: macroman.o utf8.o
-	$(AR) -r $@ $^
+	$(AR) -cr $@ $^
 
 %.o: %.c
 	$(CC) -c -o $@ $^

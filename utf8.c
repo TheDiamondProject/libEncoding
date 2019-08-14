@@ -84,7 +84,7 @@ const char *utf8_construct_from_codepoints(codepoint_t *cp, size_t len)
 	// Now allocate the memory for it, and then work through producing the UTF-8 string.
 	char *str = calloc(result_len, 1);
 	char *s = str;
-	for (int i = 0; i < result_len; ++i) {
+	for (int i = 0; i < len; ++i) {
 		const size_t n = utf8_length_for_codepoint(cp[i]);
 		int shift = utf8[0]->bits_stored * (n - 1);
 		*s++ = (cp[i] >> shift & utf8[n]->mask) | utf8[n]->lead;
