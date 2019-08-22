@@ -23,7 +23,7 @@ all: libEncoding.a
 
 .PHONY: clean
 clean:
-	rm *.o *.a
+	- rm -v test *.o *.a
 
 .PHONY: run-all-tests
 run-all-tests: test
