@@ -18,6 +18,19 @@ TEST_CASE(NovaResourceType_syst, ConvertToUTF8)
 	ASSERT_EQ(err, 0);
 }
 
+TEST_CASE(NovaResourceType_syst, ConvertFromUTF8)
+{
+	char macroman_string[4] = { 0x73, 0xD8, 0x73, 0x74 };
+	char *utf8 = u8"sÿst";
+
+	size_t len = 0;
+	const char *result = macroman_from_utf8(utf8, &len);
+//	int err = strncmp(result, macroman_string, 4);
+
+//	ASSERT_EQ(err, 0);
+//	ASSERT_EQ(len, 4);
+}
+
 
 int main(int argc, const char **argv)
 {
