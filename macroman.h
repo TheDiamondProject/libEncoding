@@ -37,5 +37,8 @@ size_t unicode_from_macroman(codepoint_t **cp, const char *restrict macroman, si
  * free'd by the caller. */
 const char *utf8_from_macroman(const char *restrict macroman, size_t len);
 
+/* Convert a UTF-8 encoded string into a MacRoman encoded string. */
+const char *macroman_from_utf8(const char *restrict utf8, size_t *len);
+
 #endif
 

@@ -76,6 +76,16 @@ static inline codepoint_t codepoint_for_macroman_char(const char c)
 	return macroman_codepoints[(uint8_t)c];
 }
 
+static inline const char macroman_char_for_codepoint(codepoint_t cp)
+{
+	for (int i = 0; i < 0x100; ++i) {
+		if (macroman_codepoints[i] == cp) {
+			return (const char)i;
+		}
+	}
+	return 0;
+}
+
 size_t unicode_from_macroman(codepoint_t **cp, const char *restrict macroman, size_t len)
 {
 	// The first step is build a new store for the code points to be placed.
@@ -107,5 +117,23 @@ const char *utf8_from_macroman(const char *restrict macroman, size_t len)
 	// Clean up and return the result.
 	free(cp);
 	return str;
+}
+
+const char *macroman_from_utf8(const char *restrict utf8, size_t *len)
+{
+	// Convert the input string to codepoints first of all.
+	codepoint_t *cp = utf8_convert_to_codepoints(utf8, len);
+
+	// Step through each of the code points and convert them into MacOSRoman
+	// encoded characters.
+	char *macroman = calloc((*len) + 1, 1);
+	for (int i = 0; i < (*len); ++i) {
+		macroman[i] = macroman_char_for_codepoint(cp[i]);
+	}
+	
+	// Return the MacOSRoman string as a result and clean up the code
+	// points.
+	free((void *)cp);
+	return macroman;
 }
 
