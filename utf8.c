@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 // MARK: - Unicode Codepoint Conversion Table
 
@@ -55,7 +56,7 @@ unicode_hint_t *utf8[] = {
 static inline size_t utf8_length_for_codepoint(codepoint_t cp)
 {
 	size_t len = 0;
-	for (unicode_hint_t **u = utf8; *u; ++u) {
+	for (unicode_hint_t **u = utf8; (*u)->bits_stored; ++u) {
 		if ((cp >= (*u)->beg) && (cp <= (*u)->end)) {
 			break;
 		}
@@ -66,6 +67,21 @@ static inline size_t utf8_length_for_codepoint(codepoint_t cp)
 		abort();
 	}
 	
+	return len;
+}
+
+static inline size_t utf8_length_for_character(const char ch)
+{
+	size_t len = 0;
+	for (unicode_hint_t **u = utf8; (*u)->bits_stored; ++u) {
+		if (((uint8_t)ch & ~(*u)->mask) == (*u)->lead) {
+			break;
+		}
+		++len;
+	}
+	if (len > 4) {
+		abort();
+	}
 	return len;
 }
 
@@ -99,3 +115,45 @@ const char *utf8_construct_from_codepoints(codepoint_t *cp, size_t len)
 	return str;
 }
 
+codepoint_t *utf8_convert_to_codepoints(const char *restrict str, size_t *len)
+{
+	// Before proceeding, determine how many bytes are going to be required to represent
+	// the output. To do this we need to make a pass through the string and determine
+	// where the UTF-8 byte boundaries lie, and thus how many codepoints are present.
+	if (len == NULL) {
+		// If no len argument was supplied then cancel out as we have no way of supplying]
+		// codepoint count to the caller.
+		return NULL;
+	}
+
+	size_t bytes = strlen(str);
+	const char *s = str;
+	size_t size = 0;
+	for (int i = 0; i < bytes; ) {
+		// Calculate the length of the character, then advance the string pointer
+		// and the increase the codepoint count.
+		size_t char_len = utf8_length_for_character(*s);
+		s += char_len;
+		size++;
+		i += char_len;
+	}
+
+	*len = size;
+
+	// Now we need to actually build the array of code points.
+	codepoint_t *cp = calloc(*len, sizeof(*cp));
+	codepoint_t *p = cp;
+	s = str;
+	for (int i = 0; i < bytes; ++i) {
+		size_t char_len = utf8_length_for_character(*s);
+		int shift = utf8[0]->bits_stored * (char_len - 1);
+		codepoint_t codep = (*s++ & utf8[char_len]->mask) << shift;
+		for (int j = 0; j < char_len; ++j, ++s) {
+			shift -= utf8[0]->bits_stored;
+			codep |= ((char)*s & utf8[0]->mask) << shift;
+		}
+		*p++ = codep;
+	}
+
+	return cp;
+}

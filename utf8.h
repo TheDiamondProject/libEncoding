@@ -33,4 +33,8 @@ typedef uint32_t codepoint_t;
  * must be free'd by the caller when it is no longer required. */
 const char *utf8_construct_from_codepoints(codepoint_t *cp, size_t len);
 
+/* Construct a new UTF-8 Codepoint array from the string provided. The result returned
+ * must be free'd by the caller when it is no longer required/ */
+codepoint_t *utf8_convert_to_codepoints(const char *restrict str, size_t *len);
+
 #endif
