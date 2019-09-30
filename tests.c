@@ -25,10 +25,10 @@ TEST_CASE(NovaResourceType_syst, ConvertFromUTF8)
 
 	size_t len = 0;
 	const char *result = macroman_from_utf8(utf8, &len);
-//	int err = strncmp(result, macroman_string, 4);
+	int err = strncmp(result, macroman_string, 4);
 
-//	ASSERT_EQ(err, 0);
-//	ASSERT_EQ(len, 4);
+	ASSERT_EQ(err, 0);
+	ASSERT_EQ(len, 4);
 }
 
 

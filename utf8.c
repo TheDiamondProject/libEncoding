@@ -148,7 +148,7 @@ codepoint_t *utf8_convert_to_codepoints(const char *restrict str, size_t *len)
 		size_t char_len = utf8_length_for_character(*s);
 		int shift = utf8[0]->bits_stored * (char_len - 1);
 		codepoint_t codep = (*s++ & utf8[char_len]->mask) << shift;
-		for (int j = 0; j < char_len; ++j, ++s) {
+		for (int j = 1; j < char_len; ++i, ++j, ++s) {
 			shift -= utf8[0]->bits_stored;
 			codep |= ((char)*s & utf8[0]->mask) << shift;
 		}
